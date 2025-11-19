@@ -75,3 +75,66 @@ class ImageDepthDataset(Dataset):
             image = self.transform(image)
 
         return image, label
+
+
+class PoseImageDataset(Dataset):
+    """Dataset that reads images from subfolders of base_dir/data_dir(s).
+    Each matching subfolder (e.g., 'P0_R0', 'P20_R30') is a label;
+    every .jpg inside that folder gets that label.
+    Returns image tensor (C=1) and integer label index."""
+
+    def __init__(
+        self, data_dirs: list[str], base_dir: str = "data/Image_Pose", transform=None
+    ):
+        # data_dirs: list of dataset folders under base_dir, e.g. ['robot_1_four_ball', ...]
+        self.base_dir = Path(base_dir)
+        self.data_dirs = data_dirs
+        self.transform = transform
+        self.samples = []  # list of (image_path, label_idx)
+        self.label_to_idx = {}  # label string -> int
+        self.idx_to_label = []  # index -> label string
+
+        for dir_name in self.data_dirs:
+            dir_root = self.base_dir.joinpath(dir_name)
+            if not dir_root.exists():
+                logging.warning(f"Data directory does not exist: {dir_root}; skipping")
+                continue
+
+            # iterate subfolders of this dir_root and pick those like 'P..._R...' (case-insensitive 'P' prefix and containing '_R')
+            for sub in sorted(dir_root.iterdir()):
+                if not sub.is_dir():
+                    continue
+                name = sub.name
+                if not (
+                    (name.startswith("P") or name.startswith("p"))
+                    and ("_R" in name or "_r" in name)
+                ):
+                    continue
+
+                jpg_files = sorted(sub.rglob("*.jpg"))
+                if not jpg_files:
+                    logging.warning(f"No .jpg files in folder {sub}; skipping")
+                    continue
+
+                # global label mapping across all data_dirs
+                if name not in self.label_to_idx:
+                    self.label_to_idx[name] = len(self.idx_to_label)
+                    self.idx_to_label.append(name)
+                lbl_idx = self.label_to_idx[name]
+
+                for jf in jpg_files:
+                    self.samples.append((jf, lbl_idx))
+
+        logging.info(
+            f"Loaded {len(self.samples)} samples from {self.base_dir} ({len(self.idx_to_label)} labels)"
+        )
+
+    def __len__(self):
+        return len(self.samples)
+
+    def __getitem__(self, idx):
+        img_path, lbl_idx = self.samples[idx]
+        img = Image.open(img_path).convert("L")  # single-channel
+        if self.transform:
+            img = self.transform(img)
+        return img, torch.tensor(lbl_idx, dtype=torch.long)
