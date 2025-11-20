@@ -1,3 +1,4 @@
+import re
 import torch
 from torch.utils.data import Dataset
 from PIL import Image
@@ -138,3 +139,137 @@ class PoseImageDataset(Dataset):
         if self.transform:
             img = self.transform(img)
         return img, torch.tensor(lbl_idx, dtype=torch.long)
+
+
+class ImageDataset2025(Dataset):
+    sub_dir_pattern = re.compile(r"^(P\d+_R\d+)$", re.IGNORECASE)
+
+    def __init__(self, base_dir: str = "data/2025_Dataset", transform=None, mode=None):
+        """
+        Args:
+            data_dirs: List of directory names to load data from
+            transform: Optional transform to be applied on images
+        """
+        if mode not in ["depth", "pose"]:
+            raise ValueError("label must be either 'depth' or 'pose'")
+        self.mode = mode
+        self.base_dir = Path(base_dir)
+        self.transform = transform
+        self.samples = []
+        self.label_to_idx = {}
+        self.idx_to_label = []
+
+        if self.mode == "depth":
+            self._load_depth_data()
+        elif self.mode == "pose":
+            self._load_pose_data()
+
+    def _load_depth_data(self):
+        if not self.base_dir.exists():
+            logging.warning(f"Base directory {self.base_dir} does not exist.")
+            return
+
+        for subdir in sorted(self.base_dir.iterdir()):
+            if not subdir.is_dir():
+                continue
+            if not self.sub_dir_pattern.match(subdir.name):
+                continue
+
+            # Expected text file name: {dir_name}_depth.txt
+            txt_filename = f"{subdir.name}_depth.txt"
+            txt_path = subdir / txt_filename
+
+            if not txt_path.exists():
+                logging.warning(f"Depth label file not found: {txt_path}")
+                continue
+
+            with open(txt_path, "r") as f:
+                for line in f:
+                    line = line.strip()
+                    if not line:
+                        continue
+
+                    # Format: ('filename', depth)
+                    # Remove parentheses
+                    content = line.strip("()")
+                    parts = content.split(",")
+
+                    if len(parts) != 2:
+                        logging.warning(f"Invalid line format in {txt_path}: {line}")
+                        continue
+
+                    # Clean up filename (remove quotes and whitespace)
+                    img_name = parts[0].strip().strip("'").strip('"')
+                    try:
+                        depth_val = float(parts[1].strip())
+                    except ValueError:
+                        logging.warning(f"Invalid depth value in {txt_path}: {line}")
+                        continue
+
+                    img_path = subdir / img_name
+                    self.samples.append((img_path, depth_val))
+
+        logging.info(f"Loaded {len(self.samples)} depth samples from {self.base_dir}")
+
+    def _load_pose_data(self):
+        if not self.base_dir.exists():
+            logging.warning(f"Base directory {self.base_dir} does not exist.")
+            return
+
+        for subdir in sorted(self.base_dir.iterdir()):
+            if not subdir.is_dir():
+                continue
+            if not self.sub_dir_pattern.match(subdir.name):
+                continue
+
+            label_str = subdir.name
+
+            # Create label mapping
+            if label_str not in self.label_to_idx:
+                self.label_to_idx[label_str] = len(self.idx_to_label)
+                self.idx_to_label.append(label_str)
+
+            label_idx = self.label_to_idx[label_str]
+
+            jpg_files = sorted(subdir.rglob("*.jpg"))
+            for jpg in jpg_files:
+                self.samples.append((jpg, label_idx))
+
+        logging.info(
+            f"Loaded {len(self.samples)} pose samples from {self.base_dir} with {len(self.idx_to_label)} classes"
+        )
+
+    def __len__(self):
+        return len(self.samples)
+
+    def __getitem__(self, idx):
+        if self.mode == "depth":
+            img_path, depth_val = self.samples[idx]
+
+            try:
+                image = Image.open(img_path).convert("L")
+                label = torch.tensor(depth_val, dtype=torch.float32)
+            except FileNotFoundError:
+                logging.warning(f"Image not found: {img_path}")
+                # Return a dummy or handle error appropriately;
+                # here we might crash or return None, but standard is to assume data exists
+                raise
+
+            if self.transform:
+                image = self.transform(image)
+
+            return image, label
+
+        elif self.mode == "pose":
+            img_path, label_idx = self.samples[idx]
+
+            try:
+                image = Image.open(img_path).convert("L")
+            except FileNotFoundError:
+                logging.warning(f"Image not found: {img_path}")
+                raise
+
+            if self.transform:
+                image = self.transform(image)
+
+            return image, torch.tensor(label_idx, dtype=torch.long)
