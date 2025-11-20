@@ -1,3 +1,7 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [project]
 name = "microrobot-dl"
 version = "0.1.0"
@@ -9,6 +13,7 @@ dependencies = [
     "torchvision>=0.24.1",
     "tqdm>=4.67.1",
 ]
+
 
 [dependency-groups]
 dev = [
