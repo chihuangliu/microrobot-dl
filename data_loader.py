@@ -1,6 +1,6 @@
 import re
 import torch
-from torch.utils.data import Dataset
+from torch.utils.data import Dataset, DataLoader
 from PIL import Image
 from pathlib import Path
 import logging
@@ -314,3 +314,56 @@ class ImageDataset2025(Dataset):
             else:
                 # label_data is class index
                 return image, torch.tensor(label_data, dtype=torch.long)
+
+
+def get_dataloaders(
+    train_dataset: Dataset,
+    test_dataset: Dataset,
+    train_ratio: float,
+    val_ratio: float,
+    train_batch_size: int = 16,
+    test_batch_size: int = 16,
+    val_batch_size: int = 16,
+) -> tuple[DataLoader, DataLoader, DataLoader]:
+    """
+    Splits the provided train_dataset into train and validation sets using train_ratio and val_ratio.
+    Uses the provided test_dataset as-is for the test DataLoader.
+
+    Args:
+        train_dataset: Dataset to be split into train/validation.
+        test_dataset: Dataset to be used for testing (not split).
+        train_ratio: Proportion of train_dataset to allocate to training (0 < train_ratio <= 1).
+        val_ratio: Proportion of train_dataset to allocate to validation (0 < val_ratio < 1).
+    Returns:
+        (train_loader, test_loader, val_loader)
+    """
+    if not (0.0 < train_ratio <= 1.0) or not (0.0 < val_ratio < 1.0):
+        raise ValueError("train_ratio and val_ratio must be in (0, 1).")
+    if train_ratio + val_ratio > 1.0:
+        raise ValueError("train_ratio + val_ratio must be <= 1.0")
+
+    total = len(train_dataset)
+    if total == 0:
+        raise ValueError("train_dataset is empty")
+
+    train_size = int(train_ratio * total)
+    val_size = int(val_ratio * total)
+
+    # Assign any rounding remainder to the train set to ensure total sizes sum to dataset length
+    remainder = total - (train_size + val_size)
+    train_size += remainder
+
+    if train_size <= 0 or val_size <= 0:
+        raise ValueError(
+            "Resulting train or val split has zero samples; adjust ratios or provide more data"
+        )
+
+    train_set, val_set = torch.utils.data.random_split(
+        train_dataset, [train_size, val_size]
+    )
+
+    train_loader = DataLoader(train_set, batch_size=train_batch_size, shuffle=True)
+    test_loader = DataLoader(test_dataset, batch_size=test_batch_size, shuffle=False)
+    val_loader = DataLoader(val_set, batch_size=val_batch_size, shuffle=False)
+
+    return train_loader, test_loader, val_loader
