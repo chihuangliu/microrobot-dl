@@ -17,3 +17,6 @@ model/
 
 # Mac generated
 .DS_Store
+
+#.vscode/
+.vscode/
