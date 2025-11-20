@@ -143,21 +143,36 @@ class PoseImageDataset(Dataset):
 
 class ImageDataset2025(Dataset):
     sub_dir_pattern = re.compile(r"^(P\d+_R\d+)$", re.IGNORECASE)
+    split_pattern = re.compile(r"^P(\d+)_R(\d+)$", re.IGNORECASE)
 
-    def __init__(self, base_dir: str = "data/2025_Dataset", transform=None, mode=None):
+    def __init__(
+        self,
+        base_dir: str = "data/2025_Dataset",
+        transform=None,
+        mode=None,
+        multi_label: bool = False,
+    ):
         """
         Args:
             data_dirs: List of directory names to load data from
             transform: Optional transform to be applied on images
+            mode: 'depth' or 'pose'
+            multi_label: If True, treats P and R as separate labels (returns [P, R]).
         """
         if mode not in ["depth", "pose"]:
             raise ValueError("label must be either 'depth' or 'pose'")
         self.mode = mode
+        self.multi_label = multi_label
         self.base_dir = Path(base_dir)
         self.transform = transform
         self.samples = []
         self.label_to_idx = {}
         self.idx_to_label = []
+
+        self.label_to_idx_p = {}
+        self.idx_to_label_p = []
+        self.label_to_idx_r = {}
+        self.idx_to_label_r = []
 
         if self.mode == "depth":
             self._load_depth_data()
@@ -223,17 +238,38 @@ class ImageDataset2025(Dataset):
                 continue
 
             label_str = subdir.name
-
-            # Create label mapping
+            # Create label mapping (populate for both multi_label and single label modes)
             if label_str not in self.label_to_idx:
                 self.label_to_idx[label_str] = len(self.idx_to_label)
                 self.idx_to_label.append(label_str)
 
-            label_idx = self.label_to_idx[label_str]
+            if self.multi_label:
+                match = self.split_pattern.match(subdir.name)
+                if match:
+                    p_val = int(match.group(1))
+                    r_val = int(match.group(2))
+
+                    if p_val not in self.label_to_idx_p:
+                        self.label_to_idx_p[p_val] = len(self.idx_to_label_p)
+                        self.idx_to_label_p.append(p_val)
+
+                    if r_val not in self.label_to_idx_r:
+                        self.label_to_idx_r[r_val] = len(self.idx_to_label_r)
+                        self.idx_to_label_r.append(r_val)
+
+                    label_data = (
+                        self.label_to_idx_p[p_val],
+                        self.label_to_idx_r[r_val],
+                    )
+                else:
+                    logging.warning(f"Could not parse P/R from {subdir.name}")
+                    continue
+            else:
+                label_data = self.label_to_idx[label_str]
 
             jpg_files = sorted(subdir.rglob("*.jpg"))
             for jpg in jpg_files:
-                self.samples.append((jpg, label_idx))
+                self.samples.append((jpg, label_data))
 
         logging.info(
             f"Loaded {len(self.samples)} pose samples from {self.base_dir} with {len(self.idx_to_label)} classes"
@@ -261,7 +297,7 @@ class ImageDataset2025(Dataset):
             return image, label
 
         elif self.mode == "pose":
-            img_path, label_idx = self.samples[idx]
+            img_path, label_data = self.samples[idx]
 
             try:
                 image = Image.open(img_path).convert("L")
@@ -272,4 +308,9 @@ class ImageDataset2025(Dataset):
             if self.transform:
                 image = self.transform(image)
 
-            return image, torch.tensor(label_idx, dtype=torch.long)
+            if self.multi_label:
+                # label_data is (p_idx, r_idx)
+                return image, torch.tensor(label_data, dtype=torch.long)
+            else:
+                # label_data is class index
+                return image, torch.tensor(label_data, dtype=torch.long)
