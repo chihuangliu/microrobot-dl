@@ -4,6 +4,7 @@ from torch.utils.data import Dataset, DataLoader
 from PIL import Image
 from pathlib import Path
 import logging
+from importlib.resources import files
 
 
 class ImageDepthDataset(Dataset):
@@ -147,7 +148,7 @@ class ImageDataset2025(Dataset):
 
     def __init__(
         self,
-        base_dir: str = "data/2025_Dataset",
+        base_dir: Path = "data/2025_Dataset",
         transform=None,
         mode=None,
         multi_label: bool = False,
@@ -319,7 +320,6 @@ class ImageDataset2025(Dataset):
 def get_dataloaders(
     train_dataset: Dataset,
     test_dataset: Dataset,
-    train_ratio: float,
     val_ratio: float,
     train_batch_size: int = 16,
     test_batch_size: int = 16,
@@ -337,16 +337,12 @@ def get_dataloaders(
     Returns:
         (train_loader, test_loader, val_loader)
     """
-    if not (0.0 < train_ratio <= 1.0) or not (0.0 < val_ratio < 1.0):
-        raise ValueError("train_ratio and val_ratio must be in (0, 1).")
-    if train_ratio + val_ratio > 1.0:
-        raise ValueError("train_ratio + val_ratio must be <= 1.0")
 
     total = len(train_dataset)
     if total == 0:
         raise ValueError("train_dataset is empty")
 
-    train_size = int(train_ratio * total)
+    train_size = int((1 - val_ratio) * total)
     val_size = int(val_ratio * total)
 
     # Assign any rounding remainder to the train set to ensure total sizes sum to dataset length

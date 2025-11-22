@@ -2,8 +2,9 @@ import json
 import random
 from pathlib import Path
 import logging
+from importlib.resources import files
 
-TEST_SET_PATH = "test_set_imagedataset2025.json"
+TEST_SET_PATH = files("microrobot_dl").joinpath("test_set_imagedataset2025.json")
 SEED = 60648
 
 
