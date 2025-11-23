@@ -10,7 +10,7 @@ SEED = 60648
 
 def generate_imagedataset2025_test_set(
     imagedataset2025,
-    test_ratio: float = 0.1,
+    test_ratio: float = 0.2,
     seed: int = SEED,
     output_path: str = TEST_SET_PATH,
 ):
