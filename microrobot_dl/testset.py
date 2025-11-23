@@ -3,6 +3,7 @@ import random
 from pathlib import Path
 import logging
 from importlib.resources import files
+from .config import TEST_RATIO
 
 TEST_SET_PATH = files("microrobot_dl").joinpath("test_set_imagedataset2025.json")
 SEED = 60648
@@ -10,7 +11,7 @@ SEED = 60648
 
 def generate_imagedataset2025_test_set(
     imagedataset2025,
-    test_ratio: float = 0.2,
+    test_ratio: float = TEST_RATIO,
     seed: int = SEED,
     output_path: str = TEST_SET_PATH,
 ):

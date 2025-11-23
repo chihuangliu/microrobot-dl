@@ -1,0 +1,2 @@
+TEST_RATIO = 0.2
+VAL_RATIO = 0.2

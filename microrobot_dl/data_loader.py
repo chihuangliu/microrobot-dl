@@ -4,7 +4,7 @@ from torch.utils.data import Dataset, DataLoader
 from PIL import Image
 from pathlib import Path
 import logging
-from importlib.resources import files
+from .config import VAL_RATIO, TEST_RATIO
 
 
 class ImageDepthDataset(Dataset):
@@ -320,7 +320,7 @@ class ImageDataset2025(Dataset):
 def get_dataloaders(
     train_dataset: Dataset,
     test_dataset: Dataset,
-    val_ratio: float,
+    val_ratio: float = VAL_RATIO / (1 - TEST_RATIO),
     train_batch_size: int = 16,
     test_batch_size: int = 16,
     val_batch_size: int = 16,
