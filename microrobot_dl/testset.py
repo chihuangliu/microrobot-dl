@@ -3,6 +3,7 @@ import random
 from pathlib import Path
 import logging
 from importlib.resources import files
+from collections import defaultdict
 from .config import TEST_RATIO
 
 TEST_SET_PATH = files("microrobot_dl").joinpath("test_set_imagedataset2025.json")
@@ -16,8 +17,10 @@ def generate_imagedataset2025_test_set(
     output_path: str = TEST_SET_PATH,
 ):
     """
-    Generate a reproducible test split (list of indices) for an ImageDataset2025 instance
+    Generate a reproducible stratified test split (list of indices) for an ImageDataset2025 instance
     and save the indices (plus minimal metadata) to `output_path` as JSON.
+
+    The sampling is stratified by label to ensure balanced representation in the test set.
 
     Returns:
         list[int]: sorted list of test indices.
@@ -29,26 +32,42 @@ def generate_imagedataset2025_test_set(
     if not (0.0 <= test_ratio <= 1.0):
         raise ValueError("test_ratio must be in [0.0, 1.0]")
 
-    # Determine test set size; if ratio > 0 but computes to 0 due to rounding, pick at least 1
-    test_size = int(round(test_ratio * total))
-    if test_ratio > 0 and test_size == 0:
-        test_size = 1
-    if test_size > total:
-        test_size = total
-
     rng = random.Random(seed)
-    if test_size >= total:
-        indices = list(range(total))
-    else:
-        indices = rng.sample(range(total), test_size)
 
-    indices_sorted = sorted(indices)
+    # Group indices by label for stratification
+    label_to_indices = defaultdict(list)
+
+    for idx, (_, label_data) in enumerate(imagedataset2025.samples):
+        # Convert label_data to a hashable type if it's a list/tensor
+        if isinstance(label_data, list):
+            key = tuple(label_data)
+        else:
+            key = label_data
+        label_to_indices[key].append(idx)
+
+    test_indices = []
+
+    for _, indices in label_to_indices.items():
+        n_samples = len(indices)
+        n_test = int(round(test_ratio * n_samples))
+        if test_ratio > 0 and n_test == 0 and n_samples > 0:
+            n_test = 1
+
+        if n_test > n_samples:
+            n_test = n_samples
+
+        if n_test > 0:
+            selected = rng.sample(indices, n_test)
+            test_indices.extend(selected)
+
+    indices_sorted = sorted(test_indices)
 
     output = {
         "test_indices": indices_sorted,
         "seed": seed,
         "test_ratio": test_ratio,
         "total_samples": total,
+        "test_samples": len(indices_sorted),
     }
 
     out_path = Path(output_path)
