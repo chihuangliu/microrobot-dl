@@ -95,7 +95,5 @@ if __name__ == "__main__":
     from microrobot_dl.data_loader import ImageDataset2025
 
     dataset = ImageDataset2025(mode="pose")
-    test_indices = generate_imagedataset2025_test_set(
-        imagedataset2025=dataset, test_ratio=0.1
-    )
+    test_indices = generate_imagedataset2025_test_set(imagedataset2025=dataset)
     print(f"Generated test set with {len(test_indices)} indices.")
