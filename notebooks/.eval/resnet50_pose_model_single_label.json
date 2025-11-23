@@ -1,0 +1,4 @@
+{
+  "model_name": "resnet50_pose_model_single_label",
+  "accuracy": 0.96
+}
