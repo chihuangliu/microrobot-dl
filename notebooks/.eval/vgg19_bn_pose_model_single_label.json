@@ -1,0 +1,8 @@
+{
+  "model_name": "vgg19_bn_pose_model_single_label",
+  "accuracy": 0.8025,
+  "metadata": {
+    "N_EPOCHS": 32,
+    "EARLY_STOPPING_PATIENCE": 5
+  }
+}
