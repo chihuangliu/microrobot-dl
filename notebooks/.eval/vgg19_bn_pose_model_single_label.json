@@ -1,8 +1,20 @@
-{
-  "model_name": "vgg19_bn_pose_model_single_label",
-  "accuracy": 0.8025,
-  "metadata": {
-    "N_EPOCHS": 32,
-    "EARLY_STOPPING_PATIENCE": 5
+[
+  {
+    "model_name": "vgg19_bn_pose_model_single_label",
+    "accuracy": 0.8025,
+    "metadata": {
+      "N_EPOCHS": 32,
+      "EARLY_STOPPING_PATIENCE": 5
+    }
+  },
+  {
+    "model_name": "vgg19_bn_pose_model_single_label",
+    "accuracy": 0.9675,
+    "metadata": {
+      "N_EPOCHS": 50,
+      "EARLY_STOPPING_PATIENCE": 8,
+      "augmentation": false,
+      "learning_rate": 0.0001
+    }
   }
-}
+]

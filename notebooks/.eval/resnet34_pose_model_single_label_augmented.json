@@ -1,0 +1,9 @@
+{
+  "model_name": "resnet34_pose_model_single_label_augmented",
+  "accuracy": 0.98,
+  "metadata": {
+    "N_EPOCHS": 50,
+    "EARLY_STOPPING_PATIENCE": 8,
+    "augmentation": true
+  }
+}
