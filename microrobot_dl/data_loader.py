@@ -317,6 +317,21 @@ class ImageDataset2025(Dataset):
                 return image, torch.tensor(label_data, dtype=torch.long)
 
 
+class TransformedDataset(Dataset):
+    def __init__(self, dataset, transform=None):
+        self.dataset = dataset
+        self.transform = transform
+
+    def __getitem__(self, idx):
+        x, y = self.dataset[idx]
+        if self.transform:
+            x = self.transform(x)
+        return x, y
+
+    def __len__(self):
+        return len(self.dataset)
+
+
 def get_dataloaders(
     train_dataset: Dataset,
     test_dataset: Dataset,
@@ -324,6 +339,8 @@ def get_dataloaders(
     train_batch_size: int = 16,
     test_batch_size: int = 16,
     val_batch_size: int = 16,
+    transform_train=None,
+    transform_test=None,
 ) -> tuple[DataLoader, DataLoader, DataLoader]:
     """
     Splits the provided train_dataset into train and validation sets using train_ratio and val_ratio.
@@ -332,8 +349,9 @@ def get_dataloaders(
     Args:
         train_dataset: Dataset to be split into train/validation.
         test_dataset: Dataset to be used for testing (not split).
-        train_ratio: Proportion of train_dataset to allocate to training (0 < train_ratio <= 1).
         val_ratio: Proportion of train_dataset to allocate to validation (0 < val_ratio < 1).
+        transform_train: Transform to apply to the training set.
+        transform_test: Transform to apply to the validation and test sets.
     Returns:
         (train_loader, test_loader, val_loader)
     """
@@ -357,6 +375,13 @@ def get_dataloaders(
     train_set, val_set = torch.utils.data.random_split(
         train_dataset, [train_size, val_size]
     )
+
+    if transform_train:
+        train_set = TransformedDataset(train_set, transform_train)
+
+    if transform_test:
+        val_set = TransformedDataset(val_set, transform_test)
+        test_dataset = TransformedDataset(test_dataset, transform_test)
 
     train_loader = DataLoader(train_set, batch_size=train_batch_size, shuffle=True)
     test_loader = DataLoader(test_dataset, batch_size=test_batch_size, shuffle=False)
