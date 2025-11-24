@@ -5,6 +5,7 @@ from torchvision import models
 resnet_models = ["resnet18", "resnet34", "resnet50"]
 alexnet_models = ["alexnet"]
 vgg_models = ["vgg11", "vgg11_bn", "vgg19", "vgg19_bn"]
+vit_models = ["vit_b_16", "vit_b_32"]
 
 
 class MicroRobotModel(nn.Module):
@@ -54,6 +55,33 @@ class ResNetModel(MicroRobotModel):
         # ResNet expects fc
         num_ftrs = self.model.fc.in_features
         self.model.fc = nn.Linear(num_ftrs, self.num_classes)
+
+
+class ViTModel(MicroRobotModel):
+    def __init__(self, model_name, num_classes, in_channels=1):
+        self.model_name = model_name
+        super().__init__(num_classes, in_channels)
+
+    def _create_model(self):
+        return getattr(models, self.model_name)()
+
+    def _modify_first_layer(self):
+        # ViT uses conv_proj for patch embeddings
+        if self.in_channels != 3:
+            old_layer = self.model.conv_proj
+            self.model.conv_proj = nn.Conv2d(
+                self.in_channels,
+                old_layer.out_channels,
+                kernel_size=old_layer.kernel_size,
+                stride=old_layer.stride,
+                padding=old_layer.padding,
+                bias=old_layer.bias is not None,
+            )
+
+    def _modify_last_layer(self):
+        # ViT heads is a Sequential block
+        num_ftrs = self.model.heads[0].in_features
+        self.model.heads = nn.Sequential(nn.Linear(num_ftrs, self.num_classes))
 
 
 class AlexNetModel(MicroRobotModel):
@@ -113,5 +141,7 @@ def get_model(model_name: str, num_classes: int, in_channels: int = 1):
         return AlexNetModel(num_classes, in_channels)
     elif model_name in vgg_models:
         return VGGModel(model_name, num_classes, in_channels)
+    elif model_name in vit_models:
+        return ViTModel(model_name, num_classes, in_channels)
     else:
         raise ValueError(f"Model {model_name} not supported.")
