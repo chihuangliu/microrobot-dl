@@ -9,9 +9,9 @@ vit_models = ["vit_b_16", "vit_b_32"]
 
 
 class MicroRobotModel(nn.Module):
-    def __init__(self, num_classes, in_channels=1):
+    def __init__(self, num_outputs, in_channels=1):
         super().__init__()
-        self.num_classes = num_classes
+        self.num_outputs = num_outputs
         self.in_channels = in_channels
         self.model = self._create_model()
         self._modify_first_layer()
@@ -31,9 +31,9 @@ class MicroRobotModel(nn.Module):
 
 
 class ResNetModel(MicroRobotModel):
-    def __init__(self, model_name, num_classes, in_channels=1):
+    def __init__(self, model_name, num_outputs, in_channels=1):
         self.model_name = model_name
-        super().__init__(num_classes, in_channels)
+        super().__init__(num_outputs, in_channels)
 
     def _create_model(self):
         return getattr(models, self.model_name)()
@@ -54,13 +54,13 @@ class ResNetModel(MicroRobotModel):
     def _modify_last_layer(self):
         # ResNet expects fc
         num_ftrs = self.model.fc.in_features
-        self.model.fc = nn.Linear(num_ftrs, self.num_classes)
+        self.model.fc = nn.Linear(num_ftrs, self.num_outputs)
 
 
 class ViTModel(MicroRobotModel):
-    def __init__(self, model_name, num_classes, in_channels=1):
+    def __init__(self, model_name, num_outputs, in_channels=1):
         self.model_name = model_name
-        super().__init__(num_classes, in_channels)
+        super().__init__(num_outputs, in_channels)
 
     def _create_model(self):
         return getattr(models, self.model_name)()
@@ -81,7 +81,7 @@ class ViTModel(MicroRobotModel):
     def _modify_last_layer(self):
         # ViT heads is a Sequential block
         num_ftrs = self.model.heads[0].in_features
-        self.model.heads = nn.Sequential(nn.Linear(num_ftrs, self.num_classes))
+        self.model.heads = nn.Sequential(nn.Linear(num_ftrs, self.num_outputs))
 
 
 class AlexNetModel(MicroRobotModel):
@@ -104,13 +104,13 @@ class AlexNetModel(MicroRobotModel):
     def _modify_last_layer(self):
         # AlexNet classifier[6] is the last linear layer
         num_ftrs = self.model.classifier[6].in_features
-        self.model.classifier[6] = nn.Linear(num_ftrs, self.num_classes)
+        self.model.classifier[6] = nn.Linear(num_ftrs, self.num_outputs)
 
 
 class VGGModel(MicroRobotModel):
-    def __init__(self, model_name, num_classes, in_channels=1):
+    def __init__(self, model_name, num_outputs, in_channels=1):
         self.model_name = model_name
-        super().__init__(num_classes, in_channels)
+        super().__init__(num_outputs, in_channels)
 
     def _create_model(self):
         return getattr(models, self.model_name)()
@@ -131,17 +131,17 @@ class VGGModel(MicroRobotModel):
     def _modify_last_layer(self):
         # VGG classifier[6] is the last linear layer
         num_ftrs = self.model.classifier[6].in_features
-        self.model.classifier[6] = nn.Linear(num_ftrs, self.num_classes)
+        self.model.classifier[6] = nn.Linear(num_ftrs, self.num_outputs)
 
 
-def get_model(model_name: str, num_classes: int, in_channels: int = 1):
+def get_model(model_name: str, num_outputs: int, in_channels: int = 1):
     if model_name in resnet_models:
-        return ResNetModel(model_name, num_classes, in_channels)
+        return ResNetModel(model_name, num_outputs, in_channels)
     elif model_name in alexnet_models:
-        return AlexNetModel(num_classes, in_channels)
+        return AlexNetModel(num_outputs, in_channels)
     elif model_name in vgg_models:
-        return VGGModel(model_name, num_classes, in_channels)
+        return VGGModel(model_name, num_outputs, in_channels)
     elif model_name in vit_models:
-        return ViTModel(model_name, num_classes, in_channels)
+        return ViTModel(model_name, num_outputs, in_channels)
     else:
         raise ValueError(f"Model {model_name} not supported.")
