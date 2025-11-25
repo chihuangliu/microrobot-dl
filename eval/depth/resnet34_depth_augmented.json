@@ -1,0 +1,13 @@
+[
+  {
+    "model_name": "resnet34_depth_augmented",
+    "metric_name": "rmse",
+    "metric_value": 0.05357741648482828,
+    "metadata": {
+      "N_EPOCHS": 50,
+      "EARLY_STOPPING_PATIENCE": 8,
+      "augmentation": true,
+      "learning_rate": 0.001
+    }
+  }
+]
