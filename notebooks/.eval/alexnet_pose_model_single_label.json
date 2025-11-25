@@ -1,0 +1,22 @@
+[
+  {
+    "model_name": "alexnet_pose_model_single_label",
+    "accuracy": 0.025,
+    "metadata": {
+      "N_EPOCHS": 50,
+      "EARLY_STOPPING_PATIENCE": 8,
+      "augmentation": false,
+      "learning_rate": 0.001
+    }
+  },
+  {
+    "model_name": "alexnet_pose_model_single_label",
+    "accuracy": 0.9725,
+    "metadata": {
+      "N_EPOCHS": 50,
+      "EARLY_STOPPING_PATIENCE": 8,
+      "augmentation": false,
+      "learning_rate": 0.0001
+    }
+  }
+]
