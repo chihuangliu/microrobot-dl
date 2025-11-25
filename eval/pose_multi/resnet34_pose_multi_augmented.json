@@ -1,0 +1,28 @@
+[
+  {
+    "model_name": "resnet34_pose_multi_augmented",
+    "metric_name": "accuracy",
+    "metric_value": 0.9575,
+    "metadata": {
+      "N_EPOCHS": 128,
+      "EARLY_STOPPING_PATIENCE": 10,
+      "augmentation": true,
+      "learning_rate": 0.001,
+      "accuracy_p": 0.965,
+      "accuracy_r": 0.9925
+    }
+  },
+  {
+    "model_name": "resnet34_pose_multi_augmented",
+    "metric_name": "accuracy",
+    "metric_value": 0.99,
+    "metadata": {
+      "N_EPOCHS": 167,
+      "EARLY_STOPPING_PATIENCE": 10,
+      "augmentation": true,
+      "learning_rate": 0.001,
+      "accuracy_p": 0.995,
+      "accuracy_r": 0.995
+    }
+  }
+]

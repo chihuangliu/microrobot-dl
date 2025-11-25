@@ -1,0 +1,15 @@
+[
+  {
+    "model_name": "resnet18_pose_multi",
+    "metric_name": "accuracy",
+    "metric_value": 0.9475,
+    "metadata": {
+      "N_EPOCHS": 50,
+      "EARLY_STOPPING_PATIENCE": 8,
+      "augmentation": false,
+      "learning_rate": 0.001,
+      "accuracy_p": 0.965,
+      "accuracy_r": 0.9825
+    }
+  }
+]
