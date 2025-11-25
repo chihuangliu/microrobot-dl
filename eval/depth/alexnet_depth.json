@@ -1,0 +1,24 @@
+[
+  {
+    "model_name": "alexnet_depth",
+    "metric_name": "rmse",
+    "metric_value": 0.07092952545858429,
+    "metadata": {
+      "N_EPOCHS": 32,
+      "EARLY_STOPPING_PATIENCE": 5,
+      "augmentation": false,
+      "learning_rate": 0.001
+    }
+  },
+  {
+    "model_name": "alexnet_depth",
+    "metric_name": "rmse",
+    "metric_value": 0.03921575903410975,
+    "metadata": {
+      "N_EPOCHS": 32,
+      "EARLY_STOPPING_PATIENCE": 5,
+      "augmentation": false,
+      "learning_rate": 0.0001
+    }
+  }
+]
