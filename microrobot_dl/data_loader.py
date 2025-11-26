@@ -17,6 +17,7 @@ class ImageDataset2025(Dataset):
         transform=None,
         mode=None,
         multi_label: bool = False,
+        multi_task: bool = False,
     ):
         """
         Args:
@@ -24,11 +25,15 @@ class ImageDataset2025(Dataset):
             transform: Optional transform to be applied on images
             mode: 'depth' or 'pose'
             multi_label: If True, treats P and R as separate labels (returns [P, R]).
+            multi_task: If True, returns (image, (pose_label, depth_label)).
         """
-        if mode not in ["depth", "pose"]:
-            raise ValueError("label must be either 'depth' or 'pose'")
+        if mode not in ["depth", "pose"] and not multi_task:
+            raise ValueError(
+                "label must be either 'depth' or 'pose' or multi_task=True"
+            )
         self.mode = mode
         self.multi_label = multi_label
+        self.multi_task = multi_task
         self.base_dir = Path(base_dir)
         self.transform = transform
         self.samples = []
@@ -40,10 +45,86 @@ class ImageDataset2025(Dataset):
         self.label_to_idx_r = {}
         self.idx_to_label_r = []
 
-        if self.mode == "depth":
+        if self.multi_task:
+            self._load_multi_task_data()
+        elif self.mode == "depth":
             self._load_depth_data()
         elif self.mode == "pose":
             self._load_pose_data()
+
+    def _load_multi_task_data(self):
+        if not self.base_dir.exists():
+            logging.warning(f"Base directory {self.base_dir} does not exist.")
+            return
+
+        for subdir in sorted(self.base_dir.iterdir()):
+            if not subdir.is_dir():
+                continue
+            if not self.sub_dir_pattern.match(subdir.name):
+                continue
+
+            # 1. Parse Pose Label
+            label_str = subdir.name
+            if label_str not in self.label_to_idx:
+                self.label_to_idx[label_str] = len(self.idx_to_label)
+                self.idx_to_label.append(label_str)
+
+            pose_label_data = None
+            if self.multi_label:
+                match = self.split_pattern.match(subdir.name)
+                if match:
+                    p_val = int(match.group(1))
+                    r_val = int(match.group(2))
+
+                    if p_val not in self.label_to_idx_p:
+                        self.label_to_idx_p[p_val] = len(self.idx_to_label_p)
+                        self.idx_to_label_p.append(p_val)
+
+                    if r_val not in self.label_to_idx_r:
+                        self.label_to_idx_r[r_val] = len(self.idx_to_label_r)
+                        self.idx_to_label_r.append(r_val)
+
+                    pose_label_data = (
+                        self.label_to_idx_p[p_val],
+                        self.label_to_idx_r[r_val],
+                    )
+            else:
+                pose_label_data = self.label_to_idx[label_str]
+
+            if pose_label_data is None and self.multi_label:
+                continue
+
+            # 2. Parse Depth Data
+            txt_filename = f"{subdir.name}_depth.txt"
+            txt_path = subdir / txt_filename
+            depth_map = {}
+
+            if txt_path.exists():
+                with open(txt_path, "r") as f:
+                    for line in f:
+                        line = line.strip()
+                        if not line:
+                            continue
+                        content = line.strip("()")
+                        parts = content.split(",")
+                        if len(parts) != 2:
+                            continue
+                        img_name = parts[0].strip().strip("'").strip('"')
+                        try:
+                            depth_val = float(parts[1].strip())
+                            depth_map[img_name] = depth_val
+                        except ValueError:
+                            continue
+
+            # 3. Match Images
+            jpg_files = sorted(subdir.rglob("*.jpg"))
+            for jpg in jpg_files:
+                if jpg.name in depth_map:
+                    self.samples.append((jpg, pose_label_data, depth_map[jpg.name]))
+
+        logging.info(
+            f"Loaded {len(self.samples)} multi-task samples from {self.base_dir}"
+        )
 
     def _load_depth_data(self):
         if not self.base_dir.exists():
@@ -145,6 +226,23 @@ class ImageDataset2025(Dataset):
         return len(self.samples)
 
     def __getitem__(self, idx):
+        if self.multi_task:
+            img_path, pose_label, depth_val = self.samples[idx]
+
+            try:
+                image = Image.open(img_path).convert("L")
+            except FileNotFoundError:
+                logging.warning(f"Image not found: {img_path}")
+                raise
+
+            if self.transform:
+                image = self.transform(image)
+
+            pose_target = torch.tensor(pose_label, dtype=torch.long)
+            depth_target = torch.tensor(depth_val, dtype=torch.float32)
+
+            return image, (pose_target, depth_target)
+
         if self.mode == "depth":
             img_path, depth_val = self.samples[idx]
 
