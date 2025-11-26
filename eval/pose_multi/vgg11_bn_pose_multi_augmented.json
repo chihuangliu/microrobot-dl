@@ -1,0 +1,15 @@
+[
+  {
+    "model_name": "vgg11_bn_pose_multi_augmented",
+    "metric_name": "accuracy",
+    "metric_value": 0.99,
+    "metadata": {
+      "N_EPOCHS": 128,
+      "EARLY_STOPPING_PATIENCE": 16,
+      "augmentation": true,
+      "learning_rate": 0.0001,
+      "accuracy_p": 0.9925,
+      "accuracy_r": 0.995
+    }
+  }
+]
