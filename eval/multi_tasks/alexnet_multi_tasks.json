@@ -1,0 +1,27 @@
+[
+  {
+    "model_name": "alexnet_multi_tasks",
+    "metric_name": "accuracy",
+    "metric_value": 0.97,
+    "metadata": {
+      "N_EPOCHS": 128,
+      "EARLY_STOPPING_PATIENCE": 16,
+      "augmentation": false,
+      "learning_rate": 0.0001,
+      "rmse": 0.10752971057017177
+    }
+  },
+  {
+    "model_name": "alexnet_multi_tasks",
+    "metric_name": "accuracy",
+    "metric_value": 0.9775,
+    "metadata": {
+      "N_EPOCHS": 128,
+      "EARLY_STOPPING_PATIENCE": 16,
+      "augmentation": false,
+      "learning_rate": 0.0001,
+      "multi_label": false,
+      "rmse": 0.08065154622767652
+    }
+  }
+]

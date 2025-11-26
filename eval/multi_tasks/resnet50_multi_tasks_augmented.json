@@ -1,0 +1,16 @@
+[
+  {
+    "model_name": "resnet50_multi_tasks_augmented",
+    "metric_name": "accuracy",
+    "metric_value": 1.0,
+    "metadata": {
+      "N_EPOCHS": 128,
+      "EARLY_STOPPING_PATIENCE": 16,
+      "augmentation": true,
+      "learning_rate": 0.0001,
+      "multi_label": false,
+      "multi_tasks_regression_loss_weight": 8,
+      "rmse": 0.051445505863078306
+    }
+  }
+]
