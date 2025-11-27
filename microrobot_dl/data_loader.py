@@ -21,7 +21,7 @@ class ImageDataset2025(Dataset):
     ):
         """
         Args:
-            data_dirs: List of directory names to load data from
+            base_dir: Base directory containing the dataset.
             transform: Optional transform to be applied on images
             mode: 'depth' or 'pose'
             multi_label: If True, treats P and R as separate labels (returns [P, R]).
