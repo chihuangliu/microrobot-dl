@@ -20,3 +20,9 @@ model/
 
 #.vscode/
 .vscode/
+
+
+*myDocuments.cannedSearch/
+eval/depth_model_comparison.csv
+eval/pose_model_comparison.csv
+
