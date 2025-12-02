@@ -6,7 +6,10 @@
       "N_EPOCHS": 50,
       "EARLY_STOPPING_PATIENCE": 8,
       "augmentation": false,
-      "learning_rate": 0.0001
+      "learning_rate": 0.0001,
+      "precision": 0.7123144563769563,
+      "recall": 0.69,
+      "f1": 0.6909496502697136
     }
   }
 ]

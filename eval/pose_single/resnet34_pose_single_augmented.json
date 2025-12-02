@@ -5,7 +5,10 @@
     "metadata": {
       "N_EPOCHS": 50,
       "EARLY_STOPPING_PATIENCE": 8,
-      "augmentation": true
+      "augmentation": true,
+      "precision": 0.9723151848151849,
+      "recall": 0.9649999999999999,
+      "f1": 0.964252918246558
     }
   },
   {
@@ -15,7 +18,10 @@
       "N_EPOCHS": 50,
       "EARLY_STOPPING_PATIENCE": 5,
       "augmentation": true,
-      "learning_rate": 0.0001
+      "learning_rate": 0.0001,
+      "precision": 0.9723151848151849,
+      "recall": 0.9649999999999999,
+      "f1": 0.964252918246558
     }
   },
   {
@@ -25,7 +31,10 @@
       "N_EPOCHS": 50,
       "EARLY_STOPPING_PATIENCE": 8,
       "augmentation": true,
-      "learning_rate": 0.0001
+      "learning_rate": 0.0001,
+      "precision": 0.9723151848151849,
+      "recall": 0.9649999999999999,
+      "f1": 0.964252918246558
     }
   }
 ]

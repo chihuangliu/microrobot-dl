@@ -5,7 +5,10 @@
     "metadata": {
       "N_EPOCHS": 50,
       "EARLY_STOPPING_PATIENCE": 8,
-      "augmentation": true
+      "augmentation": true,
+      "precision": 0.8641116848837438,
+      "recall": 0.8524999999999998,
+      "f1": 0.8477732470724462
     }
   },
   {
@@ -15,7 +18,10 @@
       "N_EPOCHS": 50,
       "EARLY_STOPPING_PATIENCE": 8,
       "augmentation": true,
-      "learning_rate": 0.0001
+      "learning_rate": 0.0001,
+      "precision": 0.9838636363636363,
+      "recall": 0.9824999999999999,
+      "f1": 0.9824415204678363
     }
   }
 ]

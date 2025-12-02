@@ -6,7 +6,10 @@
       "N_EPOCHS": 50,
       "EARLY_STOPPING_PATIENCE": 8,
       "augmentation": true,
-      "learning_rate": 0.0001
+      "learning_rate": 0.0001,
+      "precision": 0.8431295297839416,
+      "recall": 0.8149999999999998,
+      "f1": 0.8067853455578587
     }
   },
   {
@@ -16,7 +19,10 @@
       "N_EPOCHS": 50,
       "EARLY_STOPPING_PATIENCE": 8,
       "augmentation": true,
-      "learning_rate": 0.0001
+      "learning_rate": 0.0001,
+      "precision": 0.8431295297839416,
+      "recall": 0.8149999999999998,
+      "f1": 0.8067853455578587
     }
   },
   {
@@ -26,7 +32,10 @@
       "N_EPOCHS": 100,
       "EARLY_STOPPING_PATIENCE": 8,
       "augmentation": true,
-      "learning_rate": 0.0001
+      "learning_rate": 0.0001,
+      "precision": 0.8431295297839416,
+      "recall": 0.8149999999999998,
+      "f1": 0.8067853455578587
     }
   }
 ]

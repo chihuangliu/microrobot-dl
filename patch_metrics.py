@@ -1,5 +1,6 @@
 import os
 import json
+import argparse
 import torch
 import torch.nn as nn
 from torchvision import transforms
@@ -26,6 +27,13 @@ def get_architecture_from_name(model_name_str):
 
 
 def patch_metrics():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--model_name", type=str, default=None, help="Filter by model name"
+    )
+    parser.add_argument("--task", type=str, default=None, help="Filter by task")
+    args = parser.parse_args()
+
     eval_dir = "eval"
     model_dir = "model"
     data_dir = os.path.join("data", "2025_Dataset")
@@ -44,6 +52,15 @@ def patch_metrics():
     print(f"Using device: {device}")
 
     tasks_to_process = [Task.pose_single, Task.pose_multi, Task.multi_tasks]
+    if args.task:
+        if args.task in tasks_to_process:
+            tasks_to_process = [args.task]
+        else:
+            print(
+                f"Task '{args.task}' not found in available tasks: {tasks_to_process}"
+            )
+            return
+
     dataset_cache = {}
 
     for task in tasks_to_process:
@@ -72,6 +89,9 @@ def patch_metrics():
             for i, entry in enumerate(data_list):
                 model_name = entry.get("model_name")
                 if not model_name:
+                    continue
+
+                if args.model_name and model_name != args.model_name:
                     continue
 
                 model_path = os.path.join(model_dir, f"{model_name}.pth")
@@ -204,7 +224,9 @@ def patch_metrics():
                 )
 
                 calc_metric = results.get("accuracy", results.get("rmse", 0.0))
-                stored_metric = entry.get("metric_value", 0.0)
+                stored_metric = entry.get(
+                    "metric_value", results.get("accuracy", results.get("rmse", 0.0))
+                )
 
                 if abs(calc_metric - stored_metric) < 1e-4:
                     print("      Metrics match. Patching metadata.")

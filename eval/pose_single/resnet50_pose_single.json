@@ -1,10 +1,13 @@
-  [
+[
   {
     "model_name": "resnet50_pose_model_single_label",
     "accuracy": 0.8275,
     "metadata": {
       "N_EPOCHS": 32,
-      "EARLY_STOPPING_PATIENCE": 5
+      "EARLY_STOPPING_PATIENCE": 5,
+      "precision": 0.8716927190456601,
+      "recall": 0.85,
+      "f1": 0.8457482503935593
     }
   },
   {
@@ -14,7 +17,10 @@
       "N_EPOCHS": 50,
       "EARLY_STOPPING_PATIENCE": 5,
       "augmentation": false,
-      "learning_rate": 0.0001
+      "learning_rate": 0.0001,
+      "precision": 0.8716927190456601,
+      "recall": 0.85,
+      "f1": 0.8457482503935593
     }
   }
 ]
