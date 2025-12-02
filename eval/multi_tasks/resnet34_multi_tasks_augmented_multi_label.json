@@ -12,7 +12,16 @@
       "multi_tasks_regression_loss_weight": 8,
       "accuracy_p": 0.99,
       "accuracy_r": 1.0,
-      "rmse": 0.06504782941229383
+      "rmse": 0.06504782941229383,
+      "precision_p": 0.9821289821289823,
+      "recall_p": 0.9777777777777779,
+      "f1_p": 0.9773802223660886,
+      "precision_r": 1.0,
+      "recall_r": 1.0,
+      "f1_r": 1.0,
+      "precision": NaN,
+      "recall": NaN,
+      "f1": NaN
     }
   }
 ]

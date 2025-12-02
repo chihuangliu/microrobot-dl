@@ -9,7 +9,13 @@
       "augmentation": false,
       "learning_rate": 0.001,
       "accuracy_p": 0.99,
-      "accuracy_r": 0.9925
+      "accuracy_r": 0.9925,
+      "precision_p": 0.9883557800224467,
+      "recall_p": 0.9822222222222222,
+      "f1_p": 0.9842685387533423,
+      "precision_r": 0.9875871080139372,
+      "recall_r": 0.9880952380952381,
+      "f1_r": 0.9875437254697325
     }
   }
 ]

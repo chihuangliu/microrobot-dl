@@ -10,7 +10,10 @@
       "learning_rate": 0.0001,
       "multi_label": false,
       "multi_tasks_regression_loss_weight": 8,
-      "rmse": 0.08390648157205007
+      "rmse": 0.08390648157205007,
+      "precision": 0.9856410256410257,
+      "recall": 0.9819444444444445,
+      "f1": 0.9821542686591315
     }
   }
 ]
