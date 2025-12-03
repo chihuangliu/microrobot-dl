@@ -17,5 +17,26 @@
       "recall_r": 0.9916666666666666,
       "f1_r": 0.9916647854248899
     }
+  },
+  {
+    "model_name": "vgg11_bn_pose_multi_augmented",
+    "metric_name": "accuracy",
+    "metric_value": 0.99,
+    "metadata": {
+      "N_EPOCHS": 128,
+      "EARLY_STOPPING_PATIENCE": 12,
+      "augmentation": true,
+      "learning_rate": 0.0001,
+      "multi_label": true,
+      "multi_tasks_regression_loss_weight": 4,
+      "accuracy_p": 0.9925,
+      "accuracy_r": 0.995,
+      "precision_p": 0.9848484848484849,
+      "recall_p": 0.988095238095238,
+      "f1_p": 0.9858158585913225,
+      "precision_r": 0.9919073845116332,
+      "recall_r": 0.9916666666666666,
+      "f1_r": 0.9916647854248899
+    }
   }
 ]

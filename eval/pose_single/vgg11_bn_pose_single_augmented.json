@@ -11,5 +11,21 @@
       "recall": 0.8625,
       "f1": 0.8555467690007162
     }
+  },
+  {
+    "model_name": "vgg11_bn_pose_single_augmented",
+    "metric_name": "accuracy",
+    "metric_value": 0.995,
+    "metadata": {
+      "N_EPOCHS": 128,
+      "EARLY_STOPPING_PATIENCE": 12,
+      "augmentation": true,
+      "learning_rate": 0.0001,
+      "multi_label": false,
+      "multi_tasks_regression_loss_weight": 4,
+      "precision": 0.9954545454545455,
+      "recall": 0.9949999999999999,
+      "f1": 0.9949874686716793
+    }
   }
 ]

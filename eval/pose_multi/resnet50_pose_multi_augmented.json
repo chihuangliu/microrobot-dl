@@ -17,5 +17,26 @@
       "recall_r": 0.9904761904761905,
       "f1_r": 0.9915895710681245
     }
+  },
+  {
+    "model_name": "resnet50_pose_multi_augmented",
+    "metric_name": "accuracy",
+    "metric_value": 0.9925,
+    "metadata": {
+      "N_EPOCHS": 128,
+      "EARLY_STOPPING_PATIENCE": 12,
+      "augmentation": true,
+      "learning_rate": 0.0001,
+      "multi_label": true,
+      "multi_tasks_regression_loss_weight": 8,
+      "accuracy_p": 0.995,
+      "accuracy_r": 0.9975,
+      "precision_p": 0.9898989898989901,
+      "recall_p": 0.9936507936507937,
+      "f1_p": 0.9913853378450121,
+      "precision_r": 0.9965156794425087,
+      "recall_r": 0.9964285714285713,
+      "f1_r": 0.9964280133056505
+    }
   }
 ]

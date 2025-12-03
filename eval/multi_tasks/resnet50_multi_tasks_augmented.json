@@ -15,5 +15,22 @@
       "recall": 1.0,
       "f1": 1.0
     }
+  },
+  {
+    "model_name": "resnet50_multi_tasks_augmented",
+    "metric_name": "accuracy",
+    "metric_value": 0.99,
+    "metadata": {
+      "N_EPOCHS": 128,
+      "EARLY_STOPPING_PATIENCE": 12,
+      "augmentation": true,
+      "learning_rate": 0.0001,
+      "multi_label": false,
+      "multi_tasks_regression_loss_weight": 4,
+      "precision": 0.991958041958042,
+      "recall": 0.9902272727272727,
+      "f1": 0.989946413347948,
+      "rmse": 0.08626498139750562
+    }
   }
 ]
