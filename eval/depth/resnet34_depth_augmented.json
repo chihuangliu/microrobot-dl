@@ -9,5 +9,31 @@
       "augmentation": true,
       "learning_rate": 0.001
     }
+  },
+  {
+    "model_name": "resnet34_depth_augmented",
+    "metric_name": "rmse",
+    "metric_value": 0.09136398063534526,
+    "metadata": {
+      "N_EPOCHS": 128,
+      "EARLY_STOPPING_PATIENCE": 12,
+      "augmentation": true,
+      "learning_rate": 0.0001,
+      "multi_label": false,
+      "multi_tasks_regression_loss_weight": 4
+    }
+  },
+  {
+    "model_name": "resnet34_depth_augmented",
+    "metric_name": "rmse",
+    "metric_value": 0.05357741648482828,
+    "metadata": {
+      "N_EPOCHS": 128,
+      "EARLY_STOPPING_PATIENCE": 12,
+      "augmentation": true,
+      "learning_rate": 0.001,
+      "multi_label": false,
+      "multi_tasks_regression_loss_weight": 4
+    }
   }
 ]

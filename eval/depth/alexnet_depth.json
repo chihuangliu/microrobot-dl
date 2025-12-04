@@ -20,5 +20,31 @@
       "augmentation": false,
       "learning_rate": 0.0001
     }
+  },
+  {
+    "model_name": "alexnet_depth",
+    "metric_name": "rmse",
+    "metric_value": 0.03921575903410975,
+    "metadata": {
+      "N_EPOCHS": 128,
+      "EARLY_STOPPING_PATIENCE": 12,
+      "augmentation": false,
+      "learning_rate": 0.0001,
+      "multi_label": false,
+      "multi_tasks_regression_loss_weight": 4
+    }
+  },
+  {
+    "model_name": "alexnet_depth",
+    "metric_name": "rmse",
+    "metric_value": 0.04183861729242946,
+    "metadata": {
+      "N_EPOCHS": 128,
+      "EARLY_STOPPING_PATIENCE": 12,
+      "augmentation": false,
+      "learning_rate": 0.001,
+      "multi_label": false,
+      "multi_tasks_regression_loss_weight": 4
+    }
   }
 ]

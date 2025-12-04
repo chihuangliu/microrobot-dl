@@ -9,5 +9,18 @@
       "augmentation": false,
       "learning_rate": 0.0001
     }
+  },
+  {
+    "model_name": "vgg11_bn_depth",
+    "metric_name": "rmse",
+    "metric_value": 0.07172801677823831,
+    "metadata": {
+      "N_EPOCHS": 128,
+      "EARLY_STOPPING_PATIENCE": 12,
+      "augmentation": false,
+      "learning_rate": 0.0001,
+      "multi_label": false,
+      "multi_tasks_regression_loss_weight": 4
+    }
   }
 ]
