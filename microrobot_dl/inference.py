@@ -197,6 +197,12 @@ def evaluate_metrics(
             all_preds_r.extend(pred_r.cpu().numpy())
             all_targets_r.extend(labels[:, 1].cpu().numpy())
 
+            # Combine predictions for overall metrics
+            combined_pred = pred_p * num_classes_r + pred_r
+            combined_label = labels[:, 0] * num_classes_r + labels[:, 1]
+            all_preds.extend(combined_pred.cpu().numpy())
+            all_targets.extend(combined_label.cpu().numpy())
+
         elif task == Task.multi_tasks:
             pose_labels, _ = labels
             if multi_label:
@@ -236,8 +242,6 @@ def evaluate_metrics(
 
     if task in [Task.pose_single, Task.pose_multi, Task.multi_tasks]:
         results["accuracy"] = correct / total if total > 0 else 0.0
-
-    if task == Task.pose_single or (task == Task.multi_tasks):
         p, r, f1, _ = precision_recall_fscore_support(
             all_targets, all_preds, average="macro", zero_division=0
         )

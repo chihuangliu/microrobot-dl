@@ -1,17 +1,5 @@
 [
   {
-    "model_name": "resnet18_pose_model_single_label",
-    "accuracy": 0.945,
-    "metadata": {
-      "N_EPOCHS": 50,
-      "EARLY_STOPPING_PATIENCE": 8,
-      "augmentation": true,
-      "precision": 0.8641116848837438,
-      "recall": 0.8524999999999998,
-      "f1": 0.8477732470724462
-    }
-  },
-  {
     "model_name": "resnet18_pose_model_single_label_augmented",
     "accuracy": 0.9825,
     "metadata": {
@@ -22,6 +10,22 @@
       "precision": 0.9838636363636363,
       "recall": 0.9824999999999999,
       "f1": 0.9824415204678363
+    }
+  },
+  {
+    "model_name": "resnet18_pose_single_augmented",
+    "metric_name": "accuracy",
+    "metric_value": 0.945,
+    "metadata": {
+      "N_EPOCHS": 50,
+      "EARLY_STOPPING_PATIENCE": 8,
+      "augmentation": true,
+      "learning_rate": 0.001,
+      "multi_label": false,
+      "multi_tasks_regression_loss_weight": 8,
+      "precision": 0.9655388471177947,
+      "recall": 0.945,
+      "f1": 0.9440138251307783
     }
   }
 ]

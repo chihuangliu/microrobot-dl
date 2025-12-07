@@ -1,17 +1,6 @@
 [
   {
     "model_name": "vgg19_bn_pose_model_single_label",
-    "accuracy": 0.8025,
-    "metadata": {
-      "N_EPOCHS": 32,
-      "EARLY_STOPPING_PATIENCE": 5,
-      "precision": 0.9704734848484847,
-      "recall": 0.9675,
-      "f1": 0.9675715804663174
-    }
-  },
-  {
-    "model_name": "vgg19_bn_pose_model_single_label",
     "accuracy": 0.9675,
     "metadata": {
       "N_EPOCHS": 50,
@@ -37,6 +26,22 @@
       "precision": 0.9704734848484847,
       "recall": 0.9675,
       "f1": 0.9675715804663174
+    }
+  },
+  {
+    "model_name": "vgg19_bn_pose_single",
+    "metric_name": "accuracy",
+    "metric_value": 0.8025,
+    "metadata": {
+      "N_EPOCHS": 50,
+      "EARLY_STOPPING_PATIENCE": 8,
+      "augmentation": false,
+      "learning_rate": 0.001,
+      "multi_label": false,
+      "multi_tasks_regression_loss_weight": 8,
+      "precision": 0.8381283164719697,
+      "recall": 0.8024999999999999,
+      "f1": 0.7938438885964252
     }
   }
 ]

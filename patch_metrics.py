@@ -232,10 +232,9 @@ def patch_metrics():
                     print("      Metrics match. Patching metadata.")
                     modified = True
 
-                    if task == Task.pose_single or (task == Task.multi_tasks):
-                        metadata["precision"] = results.get("precision", 0.0)
-                        metadata["recall"] = results.get("recall", 0.0)
-                        metadata["f1"] = results.get("f1", 0.0)
+                    metadata["precision"] = results.get("precision", 0.0)
+                    metadata["recall"] = results.get("recall", 0.0)
+                    metadata["f1"] = results.get("f1", 0.0)
 
                     if task == Task.pose_multi or (
                         task == Task.multi_tasks and ds_multi_label

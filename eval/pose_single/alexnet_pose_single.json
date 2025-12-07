@@ -21,5 +21,21 @@
       "recall": 0.9724999999999999,
       "f1": 0.9719772043065891
     }
+  },
+  {
+    "model_name": "alexnet_pose_single",
+    "metric_name": "accuracy",
+    "metric_value": 0.025,
+    "metadata": {
+      "N_EPOCHS": 50,
+      "EARLY_STOPPING_PATIENCE": 8,
+      "augmentation": false,
+      "learning_rate": 0.001,
+      "multi_label": false,
+      "multi_tasks_regression_loss_weight": 8,
+      "precision": 0.000625,
+      "recall": 0.025,
+      "f1": 0.0012195121951219512
+    }
   }
 ]
